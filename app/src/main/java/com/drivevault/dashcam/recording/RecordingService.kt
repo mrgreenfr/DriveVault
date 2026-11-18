@@ -12,7 +12,6 @@ import androidx.camera.core.Preview
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.ProcessLifecycleOwner
 import com.drivevault.dashcam.MainActivity
 import com.drivevault.dashcam.R
 import com.drivevault.dashcam.data.repository.SettingsRepository
@@ -117,7 +116,8 @@ class RecordingService : LifecycleService() {
             return START_NOT_STICKY
         }
 
-        val manager = RecordingManager(this, ProcessLifecycleOwner.get())
+        // Keep CameraX active when the activities move to the background.
+        val manager = RecordingManager(this, this)
         recordingManager = manager
         serviceScope.launch {
             val detectionEnabled = SettingsRepository(this@RecordingService).vehicleDetectionEnabled.first()
